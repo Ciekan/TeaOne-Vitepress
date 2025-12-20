@@ -24,7 +24,8 @@ export default defineConfig({
             text: '日志',
             collapsed: true,
             items: [
-              { text: '2025.12.16', link:'/server/update/2025-12-16' }
+              { text: '2025.12.16', link:'/server/update/2025-12-16' },
+              { text: '2025.12.20', link:'/server/update/2025-12-20' },
             ]
           },
         ]
