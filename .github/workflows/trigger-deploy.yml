@@ -1,0 +1,20 @@
+name: Trigger Deploy fork sync upstream
+# 用于触发 ReyReyy/TeaOne-Deploy 同步上游仓库的工作流
+# 自动同步 --> Vercel 自动部署
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  trigger:
+    if: github.repository == 'Ciekant/TeaOne-Vitepress'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger fork workflow
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.FORK_TRIGGER_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/ReyReyy/TeaOne-Deploy/actions/workflows/sync-upstream.yml/dispatches \
+            -d '{"ref":"master"}'
