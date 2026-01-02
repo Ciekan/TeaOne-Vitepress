@@ -1,6 +1,31 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
+  vite: {
+    ssr: {
+      noExternal: ['naive-ui', 'date-fns', 'vueuc']
+    }
+  },
+  postRender(context) {
+    const styleRegex = /<css-render-style>((.|\s)+)<\/css-render-style>/
+    const vitepressPathRegex = /<vitepress-path>(.+)<\/vitepress-path>/
+    const style = styleRegex.exec(context.content)?.[1]
+    const vitepressPath = vitepressPathRegex.exec(context.content)?.[1]
+    if (vitepressPath && style) {
+      fileAndStyles[vitepressPath] = style
+    }
+    context.content = context.content.replace(styleRegex, '')
+    context.content = context.content.replace(vitepressPathRegex, '')
+  },
+  transformHtml(code, id) {
+    const html = id.split('/').pop()
+    if (!html)
+      return
+    const style = fileAndStyles[`/${html}`]
+    if (style) {
+      return code.replace(/<\/head>/, `${style}</head>`)
+    }
+  },
   lang: 'zh-CN',
   title: "TeaOne",
   head: [
@@ -48,11 +73,11 @@ export default defineConfig({
             text: '常用',
             collapsed: true,
             items: [
-              { text: '传送' },
-              { text: '重生' },
+              { text: '传送', link: '/command/common/teleport'},
+              { text: '重生', link: '/command/common/respawn'},
             ]
           },
-          { text: '领地'},
+          { text: '领地', link: '/command/field'},
         ]
       },
       {
@@ -60,8 +85,8 @@ export default defineConfig({
         collapsed: true,
         items: [
           { text: '酿酒系统', link: '/system/brewing/' },
-          { text: '领地系统' },
-          { text: '签到系统' }
+          { text: '领地系统', link: '/system/field' },
+          { text: '签到系统', link: '/system/checkin' }
         ]
       },
       {
@@ -69,8 +94,8 @@ export default defineConfig({
         collapsed: true,
         items: [
           { text: '速问速答', link: '/problem/flabbergasted'},
-          { text: '无法进入服务器' },
-          { text: '丢失连接' },
+          { text: '无法进入服务器', link: '/problem/unable'},
+          { text: '丢失连接', link: '/problem/connection' },
         ]
       },
       {

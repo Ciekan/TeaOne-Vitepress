@@ -5,6 +5,8 @@
     "docs:preview": "vitepress preview"
   },
   "devDependencies": {
+    "@css-render/vue3-ssr": "^0.15.14",
+    "naive-ui": "^2.43.2",
     "vue": "^3.5.26"
   },
   "dependencies": {
